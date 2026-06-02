@@ -2,9 +2,13 @@ import { z } from "zod";
 import { guestProcedure } from "../procedures";
 
 export const guestQuery = guestProcedure.query({
-  input: z.object({
-    id: z.string().default("guest"),
-  }).optional().default({ id: "guest" }),
+  input: z
+    .object({
+      id: z.string().default("guest"),
+    })
+    .optional()
+    .default({ id: "guest" }),
+
   run: async (ctx, input) => {
     const [user, sum] = await Promise.all([
       ctx.env.INTERNAL.getUser(input.id),
