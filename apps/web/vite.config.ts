@@ -6,6 +6,7 @@ export default defineConfig({
   envPrefix: ["PUBLIC_", "VITE_"],
   plugins: [tanstackStart(), react()],
   server: {
+    allowedHosts: ["wayguest.dev.dawson.gg"],
     port: Number(process.env.DEV_WEB_PORT ?? 5173),
   },
 });

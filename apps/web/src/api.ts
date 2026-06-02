@@ -2,10 +2,6 @@ import { createApiClient } from "@waypoint/backend";
 import type { contract } from "../../api/src/router";
 
 export const resolveApiUrl = () => {
-  if (typeof window !== "undefined") {
-    return window.location.origin.replace("5173", "8787");
-  }
-
   return process.env.PUBLIC_API_URL ?? "http://127.0.0.1:8787";
 };
 
