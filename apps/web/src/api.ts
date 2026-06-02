@@ -2,7 +2,12 @@ import { createApiClient } from "@waypoint/backend";
 import type { contract } from "../../api/src/router";
 
 export const resolveApiUrl = () => {
-  return process.env.PUBLIC_API_URL ?? "http://127.0.0.1:8787";
+  const apiUrl = import.meta.env.PUBLIC_API_URL;
+  if (!apiUrl) {
+    throw new Error("Missing PUBLIC_API_URL for Waypoint API client.");
+  }
+
+  return apiUrl;
 };
 
 export const api = createApiClient<typeof contract>({
