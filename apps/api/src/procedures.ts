@@ -3,9 +3,10 @@ import type { ApiEnv } from "./env";
 
 export const api = createApi<ApiEnv>();
 
-const guestIdentity = api.middleware("guest.identity", async (_ctx, next) => {
+const guestIdentity = api.middleware("guest.identity", async (ctx, next) => {
   // Placeholder for the real guest session behavior:
   // create or load an anonymous guest identity, then attach it to ctx.auth.
+  ctx.env.PUBLIC_APP_NAME;
   await next();
 });
 

@@ -2,7 +2,7 @@ import { WorkerEntrypoint } from "cloudflare:workers";
 import { json } from "@waypoint/backend";
 
 export interface InternalEnv {
-  CACHE?: unknown;
+  CACHE: KVNamespace;
 }
 
 export default class InternalWorker extends WorkerEntrypoint<InternalEnv> {
@@ -21,4 +21,3 @@ export default class InternalWorker extends WorkerEntrypoint<InternalEnv> {
     return json({ error: "internal_worker_rpc_only" }, { status: 404 });
   }
 }
-
