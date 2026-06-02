@@ -14,7 +14,9 @@ export const api = createApiClient<typeof contract>({
 });
 
 export const getGuest = async (id = "guest") => {
-  return api.query.guest({ id });
+  return api.guest({ id });
 };
+
+export const getGuestQueryOptions = (id = "guest") => api.guest.queryOptions({ id });
 
 export type GuestQueryResult = Awaited<ReturnType<typeof getGuest>>;
