@@ -1,6 +1,7 @@
 import { createApi, json } from "@waypoint/backend";
+import { middleware } from "@waypoint/core";
 import type InternalWorker from "../../internal/src";
-import appConfig from "../../../platform.config";
+import { appPermissions } from "../../../platform.config";
 import { z } from "zod";
 
 export interface ApiEnv {
@@ -9,13 +10,27 @@ export interface ApiEnv {
   PUBLIC_APP_NAME: string;
 }
 
-const api = createApi<ApiEnv>({
-  procedures: appConfig.procedures,
-});
+const api = createApi<ApiEnv>();
+
+const publicProcedure = api.procedure("public");
+const guestProcedure = api.procedure("guest").use(middleware.guest);
+const accountProcedure = api
+  .procedure("account")
+  .use(middleware.auth)
+  .permission(appPermissions.account.read);
+const prodSettingsProcedure = api
+  .procedure("prodSettings")
+  .use(middleware.auth)
+  .permission(appPermissions.settings.manage)
+  .in("prod")
+  .use(middleware.prodApproval);
+
+void accountProcedure;
+void prodSettingsProcedure;
 
 const contract = api.router({
   endpoints: {
-    health: api.public.endpoint({
+    health: publicProcedure.endpoint({
       method: "GET",
       path: "/health",
       run: ({ env }) =>
@@ -27,7 +42,7 @@ const contract = api.router({
     }),
   },
   queries: {
-    guest: api.guest.query({
+    guest: guestProcedure.query({
       input: z.object({
         id: z.string().default("guest"),
       }),
