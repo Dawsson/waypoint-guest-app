@@ -9,7 +9,10 @@ export const guestQuery = guestProcedure.query({
     .optional()
     .default({ id: "guest" }),
 
+  permission: ({ ctx, input }) => `guest:read:${ctx.session?.user.id ?? input.id}`,
+
   run: async (ctx, input) => {
+    const db = ctx.db;
     const [user, sum] = await Promise.all([
       ctx.env.INTERNAL.getUser(input.id),
       ctx.env.INTERNAL.add(2, 3),
@@ -23,6 +26,10 @@ export const guestQuery = guestProcedure.query({
       },
       message: "Guest access is enabled.",
       operation: ctx.operation.name,
+      session: ctx.session,
+      services: {
+        db: Boolean(db),
+      },
     };
   },
 });

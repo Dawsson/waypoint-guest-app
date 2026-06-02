@@ -22,12 +22,13 @@ export const appRoles = roles({
 
 export default app({
   apps: {
-    api: appSlot.apiWorker("apps/api/src/index.ts", { bindings: ["INTERNAL"] }),
+    api: appSlot.apiWorker("apps/api/src/index.ts", { bindings: ["DB", "INTERNAL"] }),
     internal: appSlot.internalWorker("apps/internal/src/index.ts", { bindings: ["CACHE"] }),
     web: appSlot.tanstackStart("apps/web/src/start.ts"),
   },
   bindings: {
     CACHE: binding.kv(),
+    DB: binding.d1(),
     INTERNAL: binding.worker("internal"),
   },
   logging: logging({
@@ -42,5 +43,6 @@ export default app({
   vars: {
     BETTER_AUTH_SECRET: variable.secret(),
     PUBLIC_APP_NAME: variable.string(),
+    PUBLIC_APP_URL: variable.string(),
   },
 });
