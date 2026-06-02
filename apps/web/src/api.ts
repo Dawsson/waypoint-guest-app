@@ -1,20 +1,5 @@
-export interface GuestQueryResult {
-  readonly auth: "guest";
-  readonly internal: {
-    readonly sum: number;
-    readonly user: {
-      readonly id: string;
-      readonly name: string;
-    };
-  };
-  readonly message: string;
-  readonly operation: string;
-}
-
-export interface WaypointResponse<TData> {
-  readonly data: TData;
-  readonly ok: true;
-}
+import { createApiClient } from "@waypoint/backend";
+import type { contract } from "../../api/src/router";
 
 export const resolveApiUrl = () => {
   if (typeof window !== "undefined") {
@@ -24,19 +9,12 @@ export const resolveApiUrl = () => {
   return process.env.PUBLIC_API_URL ?? "http://127.0.0.1:8787";
 };
 
+export const api = createApiClient<typeof contract>({
+  baseUrl: resolveApiUrl(),
+});
+
 export const getGuest = async (id = "guest") => {
-  const response = await fetch(`${resolveApiUrl()}/query/guest`, {
-    body: JSON.stringify({ id }),
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "POST",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Guest query failed with ${response.status}`);
-  }
-
-  const result = (await response.json()) as WaypointResponse<GuestQueryResult>;
-  return result.data;
+  return api.query.guest({ id });
 };
+
+export type GuestQueryResult = Awaited<ReturnType<typeof getGuest>>;
