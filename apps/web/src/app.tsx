@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
-import { getGuest, type GuestQueryResult } from "./api";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { guestQueryOptions } from "./api";
+
+const queryClient = new QueryClient();
 
 export function GuestHome() {
-  const [guest, setGuest] = useState<GuestQueryResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <GuestPanel />
+    </QueryClientProvider>
+  );
+}
 
-  useEffect(() => {
-    void getGuest().then(setGuest).catch((cause: unknown) => {
-      setError(cause instanceof Error ? cause.message : "Guest query failed");
-    });
-  }, []);
+function GuestPanel() {
+  const guest = useQuery(guestQueryOptions());
 
   return (
     <main className="shell">
@@ -24,19 +27,19 @@ export function GuestHome() {
         <dl className="facts">
           <div>
             <dt>Auth mode</dt>
-            <dd>{guest?.auth ?? "loading"}</dd>
+            <dd>{guest.data?.auth ?? "loading"}</dd>
           </div>
           <div>
             <dt>Internal user</dt>
-            <dd>{guest?.internal.user.name ?? "loading"}</dd>
+            <dd>{guest.data?.internal.user.name ?? "loading"}</dd>
           </div>
           <div>
             <dt>Worker RPC sum</dt>
-            <dd>{guest?.internal.sum ?? "loading"}</dd>
+            <dd>{guest.data?.internal.sum ?? "loading"}</dd>
           </div>
         </dl>
 
-        {error ? <p className="error">{error}</p> : null}
+        {guest.error ? <p className="error">{guest.error.message}</p> : null}
       </section>
     </main>
   );

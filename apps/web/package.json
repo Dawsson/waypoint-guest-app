@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@waypoint/backend": "file:../../../hosting-platform/packages/backend",
+    "@tanstack/react-query": "^5.95.0",
     "@tanstack/react-router": "^1.170.10",
     "@tanstack/react-start": "^1.168.18",
     "@tanstack/router-plugin": "^1.168.13",

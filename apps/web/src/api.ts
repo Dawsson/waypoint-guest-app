@@ -17,6 +17,6 @@ export const getGuest = async (id = "guest") => {
   return api.guest({ id });
 };
 
-export const getGuestQueryOptions = (id = "guest") => api.guest.queryOptions({ id });
+export const guestQueryOptions = () => api.guest.queryOptions();
 
 export type GuestQueryResult = Awaited<ReturnType<typeof getGuest>>;
