@@ -35,7 +35,7 @@ export default app({
   apps: {
     api: appSlot.apiWorker("apps/api/src/index.ts", { bindings: ["INTERNAL"] }),
     internal: appSlot.internalWorker("apps/internal/src/index.ts", { bindings: ["CACHE"] }),
-    web: appSlot.tanstackStart("apps/web/src/index.ts"),
+    web: appSlot.tanstackStart("apps/web/src/start.ts"),
   },
   bindings: {
     CACHE: binding.kv(),
@@ -76,4 +76,3 @@ export default app({
     PUBLIC_APP_NAME: variable.string(),
   },
 });
-

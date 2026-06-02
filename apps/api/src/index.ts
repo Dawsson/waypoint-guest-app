@@ -1,4 +1,4 @@
-import { apiContract, createApiWorker, endpoint, json, query } from "@waypoint/backend";
+import { createApi, json } from "@waypoint/backend";
 import type InternalWorker from "../../internal/src";
 import appConfig from "../../../platform.config";
 import { z } from "zod";
@@ -9,9 +9,13 @@ export interface ApiEnv {
   PUBLIC_APP_NAME: string;
 }
 
-const contract = apiContract<ApiEnv>({
+const api = createApi<ApiEnv>({
+  procedures: appConfig.procedures,
+});
+
+const contract = api.router({
   endpoints: {
-    health: endpoint(appConfig.procedures?.public!)({
+    health: api.public.endpoint({
       method: "GET",
       path: "/health",
       run: ({ env }) =>
@@ -23,7 +27,7 @@ const contract = apiContract<ApiEnv>({
     }),
   },
   queries: {
-    guest: query(appConfig.procedures?.guest!)<ApiEnv, { id: string }>({
+    guest: api.guest.query({
       input: z.object({
         id: z.string().default("guest"),
       }),
@@ -47,5 +51,4 @@ const contract = apiContract<ApiEnv>({
   },
 });
 
-export default createApiWorker(contract);
-
+export default api.worker(contract);
