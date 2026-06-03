@@ -6,6 +6,11 @@ import { authClient, ensureAnonymousSession, isAnonymousUser } from "./auth";
 
 const queryClient = new QueryClient();
 
+const signOut = async () => {
+  await authClient.signOut();
+  await queryClient.invalidateQueries({ queryKey: ["waypoint"] });
+};
+
 export function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
@@ -54,6 +59,11 @@ function GuestPanel() {
           <button type="button" onClick={continueAsGuest}>
             Continue as guest
           </button>
+          {isLoggedIn ? (
+            <button type="button" onClick={signOut}>
+              Sign out
+            </button>
+          ) : null}
           <Link to="/workspace">Open protected workspace</Link>
         </div>
       </section>
@@ -81,6 +91,11 @@ function WorkspacePanel() {
         </div>
 
         <div className="actions">
+          {session.data ? (
+            <button type="button" onClick={signOut}>
+              Sign out
+            </button>
+          ) : null}
           <Link to="/">Back to public app</Link>
         </div>
 
