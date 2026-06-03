@@ -71,11 +71,11 @@ bun way submit --control-plane https://waypoint-control.example.com
 bun way deploy api --dry-run
 ```
 
-`bun way plan` is the agent-readable dry run. `bun way submit` sends app intent
-to the control plane without deploying. The local deploy bridge can still use
-generated Wrangler config for development and escape hatches, but production
-deploys should normally run through generated GitHub Actions on Blacksmith after
-typecheck/test/build gates.
+`bun way plan` is the agent-readable dry run for this project only. `bun way
+submit` sends this app's intent to the control plane without deploying. The
+local deploy bridge can still use generated Wrangler config for development and
+escape hatches, but production deploys should normally run through generated
+GitHub Actions on Blacksmith after typecheck/test/build gates.
 
 The intended final path is manifest plus artifact upload to a central
 control-plane Worker, which reconciles Cloudflare resources, records deploy
