@@ -4,6 +4,9 @@ import { resolveApiUrl } from "./api";
 
 type AuthClientOptions = {
   readonly baseURL: string;
+  readonly fetchOptions: {
+    readonly credentials: "include";
+  };
   readonly plugins: [ReturnType<typeof anonymousClient>];
 };
 
@@ -12,6 +15,9 @@ export type AuthClient = ReturnType<typeof createAuthClient<AuthClientOptions>>;
 const createAppAuthClient = (): AuthClient => {
   return createAuthClient<AuthClientOptions>({
     baseURL: `${resolveApiUrl()}/auth`,
+    fetchOptions: {
+      credentials: "include",
+    },
     plugins: [anonymousClient()],
   });
 };
