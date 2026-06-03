@@ -10,10 +10,14 @@ export const resolveApiUrl = () => {
       process?: { env?: Record<string, string | undefined> };
     }
   ).process?.env;
-  const apiUrl = browserEnv?.PUBLIC_API_URL ?? runtimeEnv?.PUBLIC_API_URL ?? env.PUBLIC_API_URL;
+  const apiUrl =
+    readApiUrl(browserEnv) ?? readApiUrl(runtimeEnv) ?? readApiUrl(env) ?? env.PUBLIC_API_URL;
   if (!apiUrl) {
     throw new Error("Missing PUBLIC_API_URL for Waypoint API client.");
   }
 
   return apiUrl;
 };
+
+const readApiUrl = (env: Record<string, string | undefined> | undefined) =>
+  env?.PUBLIC_API_URL ?? env?.VITE_PUBLIC_API_URL ?? env?.API_URL ?? env?.VITE_API_URL;
