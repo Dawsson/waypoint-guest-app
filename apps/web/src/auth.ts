@@ -31,11 +31,15 @@ export const isAnonymousUser = (user: AuthUser | null | undefined) => {
   return Boolean(user && "isAnonymous" in user && user.isAnonymous === true);
 };
 
+const clearHostSessionCookie = async () => {
+  await fetch(`${resolveApiUrl()}/session/clear-host-cookie`, {
+    credentials: "include",
+    method: "POST",
+  });
+};
+
 export const ensureAnonymousSession = async () => {
-  const session = await authClient.getSession();
-  if (session.data) {
-    return session.data;
-  }
+  await clearHostSessionCookie();
 
   const result = await authClient.signIn.anonymous();
   if (result.error) {
