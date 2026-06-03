@@ -31,16 +31,7 @@ export const isAnonymousUser = (user: AuthUser | null | undefined) => {
   return Boolean(user && "isAnonymous" in user && user.isAnonymous === true);
 };
 
-const clearHostSessionCookie = async () => {
-  await fetch(`${resolveApiUrl()}/session/clear-host-cookie`, {
-    credentials: "include",
-    method: "POST",
-  });
-};
-
 export const ensureAnonymousSession = async () => {
-  await clearHostSessionCookie();
-
   const result = await authClient.signIn.anonymous();
   if (result.error) {
     throw new Error(result.error.message ?? "Could not create anonymous session.");
