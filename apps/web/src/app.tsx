@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { meQueryOptions } from "./api";
 import { authClient, ensureAnonymousSession, isAnonymousUser } from "./auth";
 
@@ -43,114 +43,91 @@ function GuestPanel() {
 
   return (
     <main className="shell">
-      <section className="hero-grid">
-        <div className="console-panel primary-panel">
-          <div className="panel-kicker">Waypoint demo surface</div>
-          <h1>Deploy-ready Workers app with auth, bindings, and typed calls.</h1>
-          <p className="lede">
-            This guest app exercises the current platform path: TanStack Start, an API Worker,
-            Better Auth guest sessions, D1, KV, service bindings, generated env types, and a
-            browser-safe API contract.
-          </p>
+      <section className="panel">
+        <p className="eyebrow">Waypoint guest app</p>
+        <h1>Simple app, real platform wiring.</h1>
+        <p className="summary">
+          TanStack Start, an API Worker, Better Auth anonymous sessions, D1, KV, and a typed API
+          contract.
+        </p>
 
-          <div className="actions">
-            <button type="button" onClick={continueAsGuest}>
-              Continue as guest
+        <dl className="status-list" aria-label="Auth status">
+          <StatusRow label="Logged in" value={isLoggedIn ? "yes" : "no"} />
+          <StatusRow
+            label="Session type"
+            value={isAnonymous ? "guest" : isLoggedIn ? "user" : "none"}
+          />
+          <StatusRow label="User id" value={session.data?.user.id ?? "none"} />
+        </dl>
+
+        <div className="actions">
+          <button type="button" onClick={continueAsGuest}>
+            Continue as guest
+          </button>
+          {isLoggedIn ? (
+            <button type="button" onClick={signOut}>
+              Sign out
             </button>
-            {isLoggedIn ? (
-              <button type="button" className="secondary-action" onClick={signOut}>
-                Sign out
-              </button>
-            ) : null}
-            <Link to="/workspace">Open protected workspace</Link>
-          </div>
+          ) : null}
+          <Link to="/workspace">Open protected workspace</Link>
         </div>
-
-        <div className="console-panel">
-          <div className="panel-title">
-            <span>Runtime session</span>
-            <span className={isLoggedIn ? "live-dot live" : "live-dot"} />
-          </div>
-          <dl className="status-list" aria-label="Auth status">
-            <StatusRow label="Logged in" value={isLoggedIn ? "yes" : "no"} />
-            <StatusRow
-              label="Session type"
-              value={isAnonymous ? "guest" : isLoggedIn ? "user" : "none"}
-            />
-            <StatusRow label="User id" value={session.data?.user.id ?? "none"} />
-          </dl>
-        </div>
-
-        <SignalRail />
       </section>
     </main>
   );
 }
 
 function WorkspacePanel() {
-  const session = authClient.useSession();
+  const navigate = useNavigate();
+  const [sessionChecked, setSessionChecked] = useState(false);
   const me = useQuery({
     ...meQueryOptions(),
-    enabled: Boolean(session.data),
+    enabled: sessionChecked,
   });
+
+  useEffect(() => {
+    let active = true;
+    authClient.getSession().then((session) => {
+      if (!active) {
+        return;
+      }
+      if (!session.data) {
+        navigate({ replace: true, to: "/" });
+        return;
+      }
+      setSessionChecked(true);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
 
   return (
     <main className="shell">
-      <section className="workspace-layout">
-        <div className="console-panel primary-panel">
-          <div className="panel-kicker">Protected workspace</div>
-          <h1>Server session confirmed through the typed API contract.</h1>
-          <p className="lede">
-            This page only renders useful data after the browser has a Better Auth session and the
-            API Worker authorizes the `me` query.
-          </p>
-        </div>
+      <section className="panel">
+        <p className="eyebrow">Protected workspace</p>
+        <h1>{sessionChecked ? "Signed in as guest." : "Checking session..."}</h1>
 
-        <div className="console-panel">
-          <div className="panel-title">
-            <span>Session envelope</span>
-            <span className={me.data ? "live-dot live" : "live-dot"} />
-          </div>
         <dl className="status-list" aria-label="Workspace session">
-          <StatusRow label="Session mode" value={me.data?.mode ?? "loading"} />
-          <StatusRow label="User id" value={me.data?.user.id ?? "loading"} />
-          <StatusRow label="Email" value={me.data?.user.email ?? "loading"} />
-          <StatusRow label="Session id" value={me.data?.sessionId ?? "loading"} />
+          <StatusRow
+            label="Session mode"
+            value={me.data?.mode ?? (sessionChecked ? "loading" : "checking")}
+          />
+          <StatusRow label="User id" value={me.data?.user.id ?? "none"} />
+          <StatusRow label="Email" value={me.data?.user.email ?? "none"} />
+          <StatusRow label="Session id" value={me.data?.sessionId ?? "none"} />
         </dl>
-        </div>
 
         <div className="actions">
-          {session.data ? (
-            <button type="button" className="secondary-action" onClick={signOut}>
-              Sign out
-            </button>
-          ) : null}
+          <button type="button" onClick={signOut}>
+            Sign out
+          </button>
           <Link to="/">Back to public app</Link>
         </div>
 
         {me.error ? <p className="error">{me.error.message}</p> : null}
       </section>
     </main>
-  );
-}
-
-function SignalRail() {
-  return (
-    <div className="signal-rail" aria-label="Waypoint deployment capabilities">
-      <Capability label="API Worker" value="typed contract" />
-      <Capability label="Auth" value="Better Auth guest" />
-      <Capability label="Bindings" value="KV + D1 + service" />
-      <Capability label="Build" value="asset manifest" />
-    </div>
-  );
-}
-
-function Capability({ label, value }: Readonly<{ label: string; value: string }>) {
-  return (
-    <div className="capability">
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
   );
 }
 

@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 import { anonymousClient } from "better-auth/client/plugins";
-import { resolveApiUrl } from "./api";
+import { resolveApiUrl } from "./api-url";
 
 type AuthClientOptions = {
   readonly baseURL: string;

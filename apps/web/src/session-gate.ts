@@ -1,4 +1,5 @@
 import { getSessionCookie } from "better-auth/cookies";
+import { resolveApiUrl } from "./api-url";
 
 const passthroughPrefixes = [
   "/@fs/",
@@ -30,15 +31,46 @@ export const hasSessionCookie = (request: Request) => {
   return Boolean(getSessionCookie(request));
 };
 
-export const requireWorkspaceSession = (request: Request) => {
+export const requireWorkspaceSession = async (request: Request) => {
   const url = new URL(request.url);
   if (!url.pathname.startsWith("/workspace")) {
     return null;
   }
 
-  if (!isDocumentNavigation(request) || hasSessionCookie(request)) {
+  if (!isDocumentNavigation(request)) {
+    return null;
+  }
+
+  if (hasSessionCookie(request) && (await hasValidServerSession(request))) {
     return null;
   }
 
   return Response.redirect(new URL("/", request.url), 302);
 };
+
+export const hasValidWorkspaceSession = async (request: Request) => {
+  return hasSessionCookie(request) && (await hasValidServerSession(request));
+};
+
+async function hasValidServerSession(request: Request) {
+  const response = await fetch(`${resolveApiUrl().replace(/\/$/, "")}/auth/get-session`, {
+    credentials: "include",
+    headers: forwardAuthHeaders(request.headers),
+  }).catch(() => null);
+
+  if (!response?.ok) {
+    return false;
+  }
+
+  return Boolean(await response.json().catch(() => null));
+}
+
+function forwardAuthHeaders(headers: Headers) {
+  const forwarded = new Headers();
+  const cookie = headers.get("cookie");
+  if (cookie) {
+    forwarded.set("cookie", cookie);
+  }
+
+  return forwarded;
+}
