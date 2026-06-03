@@ -32,6 +32,7 @@ export function WorkspaceHome() {
 }
 
 function GuestPanel() {
+  const navigate = useNavigate();
   const session = authClient.useSession();
   const isAnonymous = isAnonymousUser(session.data?.user);
   const isLoggedIn = Boolean(session.data);
@@ -39,6 +40,7 @@ function GuestPanel() {
   const continueAsGuest = async () => {
     await ensureAnonymousSession();
     await queryClient.invalidateQueries({ queryKey: ["waypoint"] });
+    await navigate({ to: "/workspace" });
   };
 
   return (
