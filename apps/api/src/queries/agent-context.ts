@@ -1,0 +1,53 @@
+import { publicProcedure } from "../procedures";
+
+export const agentContextQuery = publicProcedure.agentContext.query({
+  run: () => ({
+    apps: [
+      {
+        bindings: [],
+        kind: "tanstack-start",
+        name: "web",
+        vars: ["PUBLIC_API_URL", "PUBLIC_APP_NAME", "PUBLIC_APP_URL"],
+      },
+      {
+        bindings: ["CACHE", "DB", "INTERNAL"],
+        kind: "api-worker",
+        name: "api",
+        vars: [
+          "APP_URL",
+          "BETTER_AUTH_SECRET",
+          "DEV_API_URL",
+          "DEV_WEB_URL",
+          "PUBLIC_APP_NAME",
+          "PUBLIC_APP_URL",
+        ],
+      },
+      {
+        bindings: ["CACHE"],
+        kind: "internal-worker",
+        name: "internal",
+        vars: [],
+      },
+    ],
+    commands: {
+      buildArtifacts:
+        'PUBLIC_API_URL=http://127.0.0.1:8787 PUBLIC_APP_NAME="Waypoint Guest" PUBLIC_APP_URL=http://127.0.0.1:5173 APP_URL=http://127.0.0.1:8787 BETTER_AUTH_SECRET=dev-secret bun -e \'import { buildAppArtifact } from "../hosting-platform/packages/app-build/src/index.ts"; const config=(await import("./platform.config.ts")).default; for (const appName of ["api", "web"]) { const artifact=await buildAppArtifact({ config, appName, env: process.env }); console.log(JSON.stringify({ appName, mainModule: artifact.mainModule, modules: artifact.modules.length, staticAssets: artifact.staticAssets?.length ?? 0 })); }\'',
+      checkTypes: "bun run check-types",
+      dev: ["bun way dev internal", "bun way dev api", "bun way dev web"],
+      inspect:
+        "bun ../hosting-platform/packages/cli/src/index.ts inspect platform.config.ts --json",
+    },
+    generatedAt: new Date().toISOString(),
+    guardrails: [
+      "Do not import API runtime modules into the browser bundle.",
+      "Use Better Auth sessions for protected browser queries.",
+      "Use generated .waypoint env helpers instead of hand-written env casts.",
+      "Use readEventStream or readAiGatewayEventStream for SSE parsing.",
+      "Run focused checks after template changes.",
+    ],
+    project: {
+      name: "waypoint-guest-app",
+      template: "waypoint-product-template",
+    },
+  }),
+});

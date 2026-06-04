@@ -63,7 +63,31 @@ export const meOutputSchema = z.object({
   }),
 });
 
+export const agentContextOutputSchema = z.object({
+  apps: z.array(
+    z.object({
+      bindings: z.array(z.string()),
+      kind: z.string(),
+      name: z.string(),
+      vars: z.array(z.string()),
+    }),
+  ),
+  commands: z.object({
+    buildArtifacts: z.string(),
+    checkTypes: z.string(),
+    dev: z.array(z.string()),
+    inspect: z.string(),
+  }),
+  generatedAt: z.string(),
+  guardrails: z.array(z.string()),
+  project: z.object({
+    name: z.literal("waypoint-guest-app"),
+    template: z.literal("waypoint-product-template"),
+  }),
+});
+
 export const contract = c.router({
+  agentContext: c.query().output(agentContextOutputSchema),
   aiGatewayDescription: c.query().output(aiGatewayDescriptionOutputSchema),
   guest: c.query().input(guestInputSchema).output(guestOutputSchema),
   health: c.query().output(healthOutputSchema),

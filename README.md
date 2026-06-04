@@ -13,6 +13,7 @@ It is intentionally small, but it exercises the important pieces:
 - typed API client calls from a browser-safe contract module.
 - generated runtime env modules from `platform.config.ts`.
 - deploy artifact builds for Worker and TanStack Start apps.
+- agent-readable context through a typed `api.agentContext` query.
 - local dev through `bun way dev <app>`.
 
 The goal is to keep the platform honest: app code declares intent, Waypoint
@@ -118,3 +119,6 @@ events without copying a custom parser.
 The web helper also exposes `collectAiGatewayExample()` for tests and simple
 clients that need the final chunks, joined text, safe metadata, done state, and
 sanitized errors instead of live callbacks.
+The API also exposes `api.agentContext`, a typed read-only query for agents. It
+returns app slots, bindings, env names, guardrails, and stable commands for
+inspection, type checks, local dev, and artifact-build verification.
