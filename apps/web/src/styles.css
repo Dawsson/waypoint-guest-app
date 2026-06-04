@@ -112,3 +112,12 @@ button:hover,
   margin: 0;
   padding: 12px;
 }
+
+.stream-output {
+  border: 1px solid #dddddd;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  margin: 0;
+  overflow-x: auto;
+  padding: 12px;
+  white-space: pre-wrap;
+}

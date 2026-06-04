@@ -1,4 +1,5 @@
 import { healthEndpoint } from "./endpoints/health";
+import { guestStreamEndpoint } from "./endpoints/stream";
 import { contract } from "./contract";
 import { procedure } from "./procedures";
 import { guestQuery } from "./queries/guest";
@@ -8,6 +9,7 @@ export const routes = procedure.router({
   guest: guestQuery,
   health: healthEndpoint,
   me: meQuery,
+  stream: guestStreamEndpoint,
 });
 
 export { contract };

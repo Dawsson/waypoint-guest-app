@@ -37,3 +37,4 @@ const requireSession = api.middleware("auth.required", async (ctx) => {
 export const publicProcedure = procedure;
 export const guestProcedure = procedure;
 export const sessionProcedure = procedure.use(requireSession);
+export const publicEndpointProcedure = api.procedure();

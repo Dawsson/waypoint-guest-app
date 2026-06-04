@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { useEffect, useState, type ReactNode } from "react";
-import { meQueryOptions } from "./api";
+import { meQueryOptions, streamGuestEvents } from "./api";
 import { authClient, ensureAnonymousSession, isAnonymousUser } from "./auth";
 
 const queryClient = new QueryClient();
@@ -81,6 +81,8 @@ function GuestPanel() {
 function WorkspacePanel() {
   const navigate = useNavigate();
   const [sessionChecked, setSessionChecked] = useState(false);
+  const [streamEvents, setStreamEvents] = useState<string[]>([]);
+  const [streamError, setStreamError] = useState<string | null>(null);
   const me = useQuery({
     ...meQueryOptions(),
     enabled: sessionChecked,
@@ -121,6 +123,19 @@ function WorkspacePanel() {
         </dl>
 
         <div className="actions">
+          <button
+            type="button"
+            onClick={() => {
+              setStreamEvents([]);
+              setStreamError(null);
+              streamGuestEvents((event) => setStreamEvents((events) => [...events, event])).catch(
+                (error) =>
+                  setStreamError(error instanceof Error ? error.message : "Stream failed."),
+              );
+            }}
+          >
+            Run stream demo
+          </button>
           <button type="button" onClick={signOut}>
             Sign out
           </button>
@@ -128,6 +143,10 @@ function WorkspacePanel() {
         </div>
 
         {me.error ? <p className="error">{me.error.message}</p> : null}
+        {streamError ? <p className="error">{streamError}</p> : null}
+        {streamEvents.length ? (
+          <pre className="stream-output">{streamEvents.join("\n")}</pre>
+        ) : null}
       </section>
     </main>
   );
