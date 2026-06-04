@@ -20,6 +20,17 @@ describe("agent context", () => {
     expect(context.commands.checkTypes).toBe("bun run check-types");
     expect(context.commands.inspect).toContain("inspect platform.config.ts --json");
     expect(context.commands.buildArtifacts).toContain("buildAppArtifact");
+    expect(context.billing).toMatchObject({
+      customerBillable: false,
+      mode: "recorded-state-estimate",
+      providerMetricsConnected: false,
+    });
+    expect(context.billing.commands.scopedEstimate).toBe(
+      "bun way billing estimate --project waypoint-guest-app --markdown",
+    );
+    expect(context.billing.warnings).toContain(
+      "Do not use recorded-state estimates for customer billing.",
+    );
     expect(context.logging.events.map((event) => event.name)).toEqual([
       "ai_gateway.example.requested",
       "api.health.checked",

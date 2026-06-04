@@ -40,6 +40,21 @@ export const buildAgentContext = (generatedAt = new Date().toISOString()): Agent
     dev: ["bun way dev internal", "bun way dev api", "bun way dev web"],
     inspect: "bun ../hosting-platform/packages/cli/src/index.ts inspect platform.config.ts --json",
   },
+  billing: {
+    commands: {
+      assumptions: "bun way billing assumptions --markdown",
+      estimate: "bun way billing estimate --markdown",
+      scopedEstimate: "bun way billing estimate --project waypoint-guest-app --markdown",
+    },
+    customerBillable: false,
+    mode: "recorded-state-estimate",
+    providerMetricsConnected: false,
+    warnings: [
+      "Recorded-state estimates are for internal review only.",
+      "Do not use recorded-state estimates for customer billing.",
+      "Connect provider metrics before comparing this template to a Cloudflare invoice.",
+    ],
+  },
   generatedAt,
   guardrails: [
     "Do not import API runtime modules into the browser bundle.",

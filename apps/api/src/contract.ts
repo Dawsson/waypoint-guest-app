@@ -78,6 +78,17 @@ export const agentContextOutputSchema = z.object({
     dev: z.array(z.string()),
     inspect: z.string(),
   }),
+  billing: z.object({
+    commands: z.object({
+      assumptions: z.string(),
+      estimate: z.string(),
+      scopedEstimate: z.string(),
+    }),
+    customerBillable: z.literal(false),
+    mode: z.literal("recorded-state-estimate"),
+    providerMetricsConnected: z.literal(false),
+    warnings: z.array(z.string()),
+  }),
   generatedAt: z.string(),
   guardrails: z.array(z.string()),
   logging: z.object({
