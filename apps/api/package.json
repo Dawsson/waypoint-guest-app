@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check-types": "tsc -p tsconfig.json"
+    "check-types": "tsc -p tsconfig.json",
+    "test": "bun test src/**/*.test.ts"
   },
   "dependencies": {
     "@waypoint/auth": "workspace:*",
