@@ -20,6 +20,12 @@ describe("agent context", () => {
     expect(context.commands.checkTypes).toBe("bun run check-types");
     expect(context.commands.inspect).toContain("inspect platform.config.ts --json");
     expect(context.commands.buildArtifacts).toContain("buildAppArtifact");
+    expect(context.logging.events.map((event) => event.name)).toEqual([
+      "ai_gateway.example.requested",
+      "api.health.checked",
+      "auth.guest_session.created",
+      "stream.guest.connected",
+    ]);
     expect(context.guardrails).toContain(
       "Do not import API runtime modules into the browser bundle.",
     );

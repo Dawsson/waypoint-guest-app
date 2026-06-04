@@ -55,8 +55,22 @@ export default app({
   deploy: deploy.localAndGithubActions(),
   logging: logging({
     events: {
-      "account.created": z.object({
-        accountId: z.string(),
+      "ai_gateway.example.requested": z.object({
+        model: z.string(),
+        provider: z.string(),
+        streaming: z.boolean(),
+      }),
+      "api.health.checked": z.object({
+        ok: z.boolean(),
+        surface: z.literal("api"),
+      }),
+      "auth.guest_session.created": z.object({
+        sessionId: z.string(),
+        userId: z.string(),
+      }),
+      "stream.guest.connected": z.object({
+        appName: z.string(),
+        requestId: z.string().optional(),
       }),
     },
   }),

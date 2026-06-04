@@ -80,6 +80,14 @@ export const agentContextOutputSchema = z.object({
   }),
   generatedAt: z.string(),
   guardrails: z.array(z.string()),
+  logging: z.object({
+    events: z.array(
+      z.object({
+        description: z.string(),
+        name: z.string(),
+      }),
+    ),
+  }),
   project: z.object({
     name: z.literal("waypoint-guest-app"),
     template: z.literal("waypoint-product-template"),

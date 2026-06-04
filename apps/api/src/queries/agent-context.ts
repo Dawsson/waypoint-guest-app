@@ -48,6 +48,26 @@ export const buildAgentContext = (generatedAt = new Date().toISOString()): Agent
     "Use readEventStream or readAiGatewayEventStream for SSE parsing.",
     "Run focused checks after template changes.",
   ],
+  logging: {
+    events: [
+      {
+        description: "An AI Gateway example request was described or streamed.",
+        name: "ai_gateway.example.requested",
+      },
+      {
+        description: "The API health surface was checked.",
+        name: "api.health.checked",
+      },
+      {
+        description: "A guest Better Auth session was created.",
+        name: "auth.guest_session.created",
+      },
+      {
+        description: "The guest SSE example accepted a client connection.",
+        name: "stream.guest.connected",
+      },
+    ],
+  },
   project: {
     name: "waypoint-guest-app",
     template: "waypoint-product-template",
