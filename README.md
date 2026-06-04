@@ -99,6 +99,13 @@ Install dependencies:
 bun install
 ```
 
+This local checkout includes `../hosting-platform/packages/*` in its Bun
+workspace so private Waypoint packages can resolve their internal `workspace:*`
+dependencies while the platform is still unpublished. The `dev` startup does
+not run `bun install` automatically; run installs intentionally from the repo
+you are changing so package links do not drift while the local platform is under
+active development.
+
 Run individual services:
 
 ```sh
