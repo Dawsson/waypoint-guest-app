@@ -89,6 +89,21 @@ export const agentContextOutputSchema = z.object({
     providerMetricsConnected: z.literal(false),
     warnings: z.array(z.string()),
   }),
+  backups: z.object({
+    commands: z.object({
+      drillPlan: z.string(),
+      readiness: z.string(),
+      restorePlan: z.string(),
+    }),
+    lockedReplica: z.object({
+      objectLockExpected: z.literal(true),
+      primaryStorage: z.literal("r2"),
+      replicaStorage: z.literal("backblaze-b2"),
+      remoteVerification: z.literal(false),
+    }),
+    readOnly: z.literal(true),
+    warnings: z.array(z.string()),
+  }),
   domains: z.object({
     commands: z.object({
       cleanupPlan: z.string(),

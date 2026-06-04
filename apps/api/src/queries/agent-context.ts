@@ -55,6 +55,25 @@ export const buildAgentContext = (generatedAt = new Date().toISOString()): Agent
       "Connect provider metrics before comparing this template to a Cloudflare invoice.",
     ],
   },
+  backups: {
+    commands: {
+      drillPlan: "bun way backup drill plan --markdown",
+      readiness: "bun way backup readiness --markdown",
+      restorePlan: "bun way restore plan <backup-json> --markdown",
+    },
+    lockedReplica: {
+      objectLockExpected: true,
+      primaryStorage: "r2",
+      replicaStorage: "backblaze-b2",
+      remoteVerification: false,
+    },
+    readOnly: true,
+    warnings: [
+      "R2 is primary storage; Backblaze B2 is a locked disaster-recovery replica.",
+      "Readiness and drill plans must not read Backblaze, write R2, call Cloudflare, or apply restores.",
+      "Remote object-lock and replica availability are not verified by template agent context.",
+    ],
+  },
   domains: {
     commands: {
       cleanupPlan: "bun way preview cleanup plan --markdown",

@@ -31,6 +31,20 @@ describe("agent context", () => {
     expect(context.billing.warnings).toContain(
       "Do not use recorded-state estimates for customer billing.",
     );
+    expect(context.backups).toMatchObject({
+      lockedReplica: {
+        objectLockExpected: true,
+        primaryStorage: "r2",
+        remoteVerification: false,
+        replicaStorage: "backblaze-b2",
+      },
+      readOnly: true,
+    });
+    expect(context.backups.commands.readiness).toBe("bun way backup readiness --markdown");
+    expect(context.backups.commands.drillPlan).toBe("bun way backup drill plan --markdown");
+    expect(context.backups.warnings).toContain(
+      "Readiness and drill plans must not read Backblaze, write R2, call Cloudflare, or apply restores.",
+    );
     expect(context.domains).toMatchObject({
       previewPolicy: {
         allowedActors: ["Dawsson"],
