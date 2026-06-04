@@ -39,6 +39,19 @@ export const healthOutputSchema = z.object({
   surface: z.literal("api"),
 });
 
+export const aiGatewayDescriptionOutputSchema = z.object({
+  providerCount: z.number(),
+  providers: z.array(
+    z.object({
+      cacheTtlSeconds: z.number().optional(),
+      model: z.string().optional(),
+      provider: z.string(),
+      streaming: z.boolean(),
+    }),
+  ),
+  streaming: z.boolean(),
+});
+
 export const meOutputSchema = z.object({
   mode: z.enum(["anonymous", "user"]),
   sessionId: z.string(),
@@ -51,6 +64,7 @@ export const meOutputSchema = z.object({
 });
 
 export const contract = c.router({
+  aiGatewayDescription: c.query().output(aiGatewayDescriptionOutputSchema),
   guest: c.query().input(guestInputSchema).output(guestOutputSchema),
   health: c.query().output(healthOutputSchema),
   me: c.query().output(meOutputSchema),

@@ -2,10 +2,12 @@ import { healthEndpoint } from "./endpoints/health";
 import { guestStreamEndpoint } from "./endpoints/stream";
 import { contract } from "./contract";
 import { procedure } from "./procedures";
+import { aiGatewayDescriptionQuery } from "./queries/ai-gateway";
 import { guestQuery } from "./queries/guest";
 import { meQuery } from "./queries/me";
 
 export const routes = procedure.router({
+  aiGatewayDescription: aiGatewayDescriptionQuery,
   guest: guestQuery,
   health: healthEndpoint,
   me: meQuery,
