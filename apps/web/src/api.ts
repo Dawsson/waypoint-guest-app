@@ -1,4 +1,4 @@
-import { createApiClient, readEventStream } from "@waypoint/backend";
+import { createApiClient, readAiGatewayEventStream, readEventStream } from "@waypoint/backend";
 import { contract } from "../../api/src/contract";
 import { resolveApiUrl } from "./api-url";
 
@@ -29,8 +29,14 @@ export const streamAiGatewayExample = async (onEvent: (event: string) => void) =
     credentials: "include",
   });
 
-  await readEventStream(response, {
-    onEvent: (event) => onEvent(`${event.event ?? "message"}: ${event.data}`),
+  await readAiGatewayEventStream(response, {
+    onChunk: (chunk) => onEvent(`chunk: ${chunk}`),
+    onDone: () => onEvent("done: true"),
+    onError: (error) => onEvent(`error: ${error.code} - ${error.message}`),
+    onMeta: (metadata) =>
+      onEvent(
+        `meta: status=${metadata.status} providers=${metadata.description?.providerCount ?? 0}`,
+      ),
   });
 };
 

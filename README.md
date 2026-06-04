@@ -110,3 +110,8 @@ PUBLIC_API_URL=http://127.0.0.1:8787 PUBLIC_APP_NAME="Waypoint Guest" PUBLIC_APP
 The API Worker bootstraps the small local D1 schema used by this example so the
 anonymous-auth flow works immediately in local development. A real Waypoint
 control plane should replace that with managed migrations.
+
+The workspace stream demo uses `readEventStream()` for ordinary product SSE.
+The AI Gateway demo uses `readAiGatewayEventStream()` so browser code handles
+Waypoint's provider-neutral `meta`, `chunk`, `done`, and sanitized `error`
+events without copying a custom parser.
