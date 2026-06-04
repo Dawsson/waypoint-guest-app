@@ -1,4 +1,9 @@
-import { createApiClient, readAiGatewayEventStream, readEventStream } from "@waypoint/backend";
+import {
+  collectAiGatewayEventStream,
+  createApiClient,
+  readAiGatewayEventStream,
+  readEventStream,
+} from "@waypoint/backend";
 import { contract } from "../../api/src/contract";
 import { resolveApiUrl } from "./api-url";
 
@@ -38,6 +43,14 @@ export const streamAiGatewayExample = async (onEvent: (event: string) => void) =
         `meta: status=${metadata.status} providers=${metadata.description?.providerCount ?? 0}`,
       ),
   });
+};
+
+export const collectAiGatewayExample = async () => {
+  const response = await fetch(`${resolveApiUrl()}/events/ai-gateway`, {
+    credentials: "include",
+  });
+
+  return collectAiGatewayEventStream(response);
 };
 
 export type GuestQueryResult = Awaited<ReturnType<typeof getGuest>>;

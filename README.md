@@ -115,3 +115,6 @@ The workspace stream demo uses `readEventStream()` for ordinary product SSE.
 The AI Gateway demo uses `readAiGatewayEventStream()` so browser code handles
 Waypoint's provider-neutral `meta`, `chunk`, `done`, and sanitized `error`
 events without copying a custom parser.
+The web helper also exposes `collectAiGatewayExample()` for tests and simple
+clients that need the final chunks, joined text, safe metadata, done state, and
+sanitized errors instead of live callbacks.
