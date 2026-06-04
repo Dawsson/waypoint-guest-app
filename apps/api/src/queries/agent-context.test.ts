@@ -58,6 +58,25 @@ describe("agent context", () => {
     expect(context.domains.warnings).toContain(
       "GitHub-triggered previews require Dawsson plus an explicit /waypoint preview command.",
     );
+    expect(context.aiGateway).toMatchObject({
+      endpointPlan: {
+        chatCompletionsUrl:
+          "https://api.cloudflare.com/client/v4/accounts/%3Ccloudflare-account-id%3E/ai/v1/chat/completions",
+        openAiCompatibleBaseUrl:
+          "https://gateway.ai.cloudflare.com/v1/%3Ccloudflare-account-id%3E/default/openai",
+        recommendedEndpoint: "rest-api-openai-compatible",
+        responsesUrl:
+          "https://api.cloudflare.com/client/v4/accounts/%3Ccloudflare-account-id%3E/ai/v1/responses",
+        restApiBaseUrl:
+          "https://api.cloudflare.com/client/v4/accounts/%3Ccloudflare-account-id%3E/ai/v1",
+        universalDeprecated: true,
+        universalUrl: "https://gateway.ai.cloudflare.com/v1/%3Ccloudflare-account-id%3E/default",
+      },
+      mockStreamingDemo: true,
+    });
+    expect(context.aiGateway.warnings).toContain(
+      "The template stream demo uses a mock Response and does not call AI Gateway.",
+    );
     expect(context.logging.events.map((event) => event.name)).toEqual([
       "ai_gateway.example.requested",
       "api.health.checked",

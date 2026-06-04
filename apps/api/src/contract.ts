@@ -118,6 +118,19 @@ export const agentContextOutputSchema = z.object({
     readOnly: z.literal(true),
     warnings: z.array(z.string()),
   }),
+  aiGateway: z.object({
+    endpointPlan: z.object({
+      chatCompletionsUrl: z.string(),
+      openAiCompatibleBaseUrl: z.string(),
+      recommendedEndpoint: z.literal("rest-api-openai-compatible"),
+      responsesUrl: z.string(),
+      restApiBaseUrl: z.string(),
+      universalDeprecated: z.literal(true),
+      universalUrl: z.string(),
+    }),
+    mockStreamingDemo: z.literal(true),
+    warnings: z.array(z.string()),
+  }),
   generatedAt: z.string(),
   guardrails: z.array(z.string()),
   logging: z.object({

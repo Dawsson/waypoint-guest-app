@@ -1,4 +1,5 @@
 import type { z } from "zod";
+import { aiGatewayEndpointPlan } from "@waypoint/backend";
 
 import { agentContextOutputSchema } from "../contract";
 import { publicProcedure } from "../procedures";
@@ -91,6 +92,18 @@ export const buildAgentContext = (generatedAt = new Date().toISOString()): Agent
       "Domain inspection must not attach routes, create custom domains, or enable previews.",
       "GitHub-triggered previews require Dawsson plus an explicit /waypoint preview command.",
       "Preview cleanup plans are read-only until an operator approves deletion.",
+    ],
+  },
+  aiGateway: {
+    endpointPlan: aiGatewayEndpointPlan({
+      accountId: "<cloudflare-account-id>",
+      gatewayId: "default",
+    }),
+    mockStreamingDemo: true,
+    warnings: [
+      "The template stream demo uses a mock Response and does not call AI Gateway.",
+      "New production integrations should use the REST API OpenAI-compatible endpoints from endpointPlan.",
+      "Do not log prompts, provider authorization headers, or raw provider payloads.",
     ],
   },
   generatedAt,
