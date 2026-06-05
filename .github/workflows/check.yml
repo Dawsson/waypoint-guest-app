@@ -19,6 +19,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: waypoint-guest-app
+
+      - name: Checkout Waypoint platform
+        uses: actions/checkout@v4
+        with:
+          repository: withharbor/hosting
+          path: hosting-platform
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -26,7 +34,9 @@ jobs:
           bun-version: 1.3.12
 
       - name: Install dependencies
+        working-directory: waypoint-guest-app
         run: bun install --frozen-lockfile
 
       - name: Run checks
+        working-directory: waypoint-guest-app
         run: bun run check
