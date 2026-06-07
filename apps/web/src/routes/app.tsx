@@ -1,38 +1,59 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
-import { api, counterQueryOptions } from "../api";
+import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { api, counterQueryOptions, meQueryOptions } from "../api";
+import { authClient } from "../auth";
+import { hasServerSession } from "../session";
 
-export const Route = createFileRoute("/")({
-  component: HomeRoute,
-  loader: ({ context }) => context.queryClient.ensureQueryData(counterQueryOptions()),
+export const Route = createFileRoute("/app")({
+  beforeLoad: async () => {
+    if (!(await hasServerSession())) {
+      throw redirect({ to: "/sign-in" });
+    }
+  },
+  component: AppRoute,
+  loader: async ({ context }) => {
+    const [counter] = await Promise.all([
+      context.queryClient.ensureQueryData(counterQueryOptions()),
+      context.queryClient.ensureQueryData(meQueryOptions()),
+    ]);
+    return counter;
+  },
 });
 
-function HomeRoute() {
+function AppRoute() {
   const initialCounter = Route.useLoaderData();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const counter = useQuery(counterQueryOptions());
   const counterValue = counter.data?.value ?? initialCounter.value;
+  const me = useQuery(meQueryOptions());
   const increment = useMutation({
     ...api.counter.increment.mutationOptions(),
     onSuccess: (nextCounter) =>
       queryClient.setQueryData(api.counter.get.queryKey(), nextCounter),
   });
 
+  const signOut = async () => {
+    await authClient.signOut();
+    await queryClient.invalidateQueries();
+    await navigate({ to: "/" });
+  };
+
   return (
     <main className="shell">
       <section className="counter-panel" aria-labelledby="counter-title">
         <div className="counter-header">
           <div>
-            <p className="section-label">Counter</p>
+            <p className="section-label">{me.data?.user?.email ?? "Account"}</p>
             <h1 id="counter-title">Count</h1>
           </div>
           <nav aria-label="Counter mode" className="mode-switch">
-            <span aria-current="page" className="mode-option is-active">
+            <Link className="mode-option" to="/">
               Public
-            </span>
-            <Link className="mode-option" to="/app">
-              Account
             </Link>
+            <span aria-current="page" className="mode-option is-active">
+              Account
+            </span>
           </nav>
         </div>
 
@@ -43,7 +64,7 @@ function HomeRoute() {
 
         <div className="counter-meta">
           <span>Step</span>
-          <strong>+1</strong>
+          <strong>+5</strong>
         </div>
 
         <div className="actions primary-actions">
@@ -53,11 +74,11 @@ function HomeRoute() {
             type="button"
             onClick={() => increment.mutate()}
           >
-            {increment.isPending ? "Adding" : "Add 1"}
+            {increment.isPending ? "Adding" : "Add 5"}
           </button>
-          <Link className="text-link" to="/sign-in">
-            Sign in
-          </Link>
+          <button className="secondary-button" type="button" onClick={signOut}>
+            Sign out
+          </button>
         </div>
 
         {increment.error ? <p className="error">{increment.error.message}</p> : null}
