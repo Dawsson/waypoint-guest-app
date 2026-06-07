@@ -18,6 +18,7 @@ jobs:
     timeout-minutes: 15
     env:
       WAYPOINT_PLATFORM_CHECKOUT_TOKEN: ${{ secrets.WAYPOINT_PLATFORM_CHECKOUT_TOKEN }}
+      WAYPOINT_REGISTRY_TOKEN: ${{ secrets.WAYPOINT_REGISTRY_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -26,6 +26,7 @@ jobs:
       PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
       PUBLIC_APP_NAME: ${{ vars.PUBLIC_APP_NAME }}
       PUBLIC_WEB_URL: ${{ vars.PUBLIC_WEB_URL }}
+      WAYPOINT_REGISTRY_TOKEN: ${{ secrets.WAYPOINT_REGISTRY_TOKEN }}
       WEB_URL: ${{ vars.WEB_URL }}
     steps:
       - name: Checkout guest app
