@@ -34,6 +34,7 @@ export default app({
     api: appSlot.apiWorker("apps/api/src/index.ts", {
       bindings: ["CACHE", "DB", "INTERNAL"],
       vars: [
+        "API_URL",
         "APP_URL",
         "BETTER_AUTH_SECRET",
         "DEV_API_URL",
@@ -77,12 +78,13 @@ export default app({
   name: "waypoint-guest-app",
   permissions: permissionCatalog,
   vars: {
-    APP_URL: variable.string(),
+    API_URL: variable.url(),
+    APP_URL: variable.url(),
     BETTER_AUTH_SECRET: variable.secret(),
     DEV_API_URL: variable.optionalString(),
     DEV_WEB_URL: variable.optionalString(),
-    PUBLIC_API_URL: variable.string().public(),
+    PUBLIC_API_URL: variable.url().public(),
     PUBLIC_APP_NAME: variable.string(),
-    PUBLIC_APP_URL: variable.string().public(),
+    PUBLIC_APP_URL: variable.url().public(),
   },
 });

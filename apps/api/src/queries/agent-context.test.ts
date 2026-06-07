@@ -98,7 +98,8 @@ describe("agent context", () => {
         dump: "bun way logs dump --api local --state local --project waypoint-guest-app --markdown",
       },
       notes: [
-        "way dev sends local process logs to the Waypoint local daemon when it is running.",
+        "Worker dev uses Waypoint's Miniflare-backed runtime, rebuilds into .waypoint/build/dev/<app>, and reloads on source changes.",
+        "way dev sends local process logs to the Waypoint local daemon, which always runs locally on development devices.",
         "Use /dev for laptop-only projects and /projects for hosted control-plane projects.",
         "Remote agents should use hosted logs unless they can reach this machine's local daemon.",
       ],

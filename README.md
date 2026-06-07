@@ -112,12 +112,21 @@ active development.
 Run individual services:
 
 ```sh
-bun way dev internal
-bun way dev api
-bun way dev web
+bun run dev:daemon
+bun run dev:internal
+bun run dev:api
+bun run dev:web
 ```
 
-Or start the dev CLI session from this repo with the configured `dev.json`.
+Or start the dev CLI session from this repo with the configured `dev.json`:
+
+```sh
+bun run dev
+```
+
+Worker services run through Waypoint's Miniflare-backed local runtime. Source
+changes rebuild into `.waypoint/build/dev/<app>` and reload the Worker runtime
+without product-owned Wrangler config.
 
 ## Checks
 

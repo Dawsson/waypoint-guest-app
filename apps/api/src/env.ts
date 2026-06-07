@@ -1,7 +1,9 @@
+import type { WaypointUrl } from "@waypoint/core";
 import type InternalWorker from "../../internal/src";
 
 export interface ApiEnv {
-  APP_URL: string;
+  API_URL: WaypointUrl;
+  APP_URL: WaypointUrl;
   BETTER_AUTH_SECRET: string;
   CACHE: KVNamespace;
   DB: D1Database;
@@ -9,5 +11,5 @@ export interface ApiEnv {
   DEV_WEB_URL?: string;
   INTERNAL: Service<typeof InternalWorker>;
   PUBLIC_APP_NAME: string;
-  PUBLIC_APP_URL: string;
+  PUBLIC_APP_URL: WaypointUrl;
 }

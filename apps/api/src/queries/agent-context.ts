@@ -20,6 +20,7 @@ export const buildAgentContext = (generatedAt = new Date().toISOString()): Agent
       name: "api",
       vars: [
         "APP_URL",
+        "API_URL",
         "BETTER_AUTH_SECRET",
         "DEV_API_URL",
         "DEV_WEB_URL",
@@ -36,9 +37,9 @@ export const buildAgentContext = (generatedAt = new Date().toISOString()): Agent
   ],
   commands: {
     buildArtifacts:
-      'PUBLIC_API_URL=http://127.0.0.1:8787 PUBLIC_APP_NAME="Waypoint Guest" PUBLIC_APP_URL=http://127.0.0.1:5173 APP_URL=http://127.0.0.1:8787 BETTER_AUTH_SECRET=dev-secret bun -e \'import { buildAppArtifact } from "../hosting-platform/packages/app-build/src/index.ts"; const config=(await import("./platform.config.ts")).default; for (const appName of ["api", "web"]) { const artifact=await buildAppArtifact({ config, appName, env: process.env }); console.log(JSON.stringify({ appName, mainModule: artifact.mainModule, modules: artifact.modules.length, staticAssets: artifact.staticAssets?.length ?? 0 })); }\'',
+      'API_URL=http://127.0.0.1:8787 PUBLIC_API_URL=http://127.0.0.1:8787 PUBLIC_APP_NAME="Waypoint Guest" PUBLIC_APP_URL=http://127.0.0.1:5173 APP_URL=http://127.0.0.1:8787 BETTER_AUTH_SECRET=dev-secret bun -e \'import { buildAppArtifact } from "../hosting-platform/packages/app-build/src/index.ts"; const config=(await import("./platform.config.ts")).default; for (const appName of ["api", "web"]) { const artifact=await buildAppArtifact({ config, appName, env: process.env }); console.log(JSON.stringify({ appName, mainModule: artifact.mainModule, modules: artifact.modules.length, staticAssets: artifact.staticAssets?.length ?? 0 })); }\'',
     checkTypes: "bun run check-types",
-    dev: ["bun way dev internal", "bun way dev api", "bun way dev web"],
+    dev: ["bun run dev:daemon", "bun run dev:internal", "bun run dev:api", "bun run dev:web"],
     inspect: "bun ../hosting-platform/packages/cli/src/index.ts inspect platform.config.ts --json",
   },
   billing: {
@@ -148,11 +149,12 @@ export const buildAgentContext = (generatedAt = new Date().toISOString()): Agent
       app: "bun way logs --api local --state local --project waypoint-guest-app --app api",
       dump: "bun way logs dump --api local --state local --project waypoint-guest-app --markdown",
     },
-    notes: [
-      "way dev sends local process logs to the Waypoint local daemon when it is running.",
-      "Use /dev for laptop-only projects and /projects for hosted control-plane projects.",
-      "Remote agents should use hosted logs unless they can reach this machine's local daemon.",
-    ],
+      notes: [
+        "Worker dev uses Waypoint's Miniflare-backed runtime, rebuilds into .waypoint/build/dev/<app>, and reloads on source changes.",
+        "way dev sends local process logs to the Waypoint local daemon, which always runs locally on development devices.",
+        "Use /dev for laptop-only projects and /projects for hosted control-plane projects.",
+        "Remote agents should use hosted logs unless they can reach this machine's local daemon.",
+      ],
   },
   permissions: {
     catalog: [

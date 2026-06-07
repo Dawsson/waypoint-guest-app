@@ -20,9 +20,14 @@ Cloudflare account mutations, and platform-admin telemetry belong in Waypoint.
 
 ## Local Dev And Logs
 
-- Start app services with `bun way dev internal`, `bun way dev api`, and
-  `bun way dev web`, or use the repo `dev.json`.
-- `way dev` logs should be sent to the Waypoint local daemon when it is running.
+- Start the full local session with `bun run dev`, or run individual services
+  with `bun run dev:daemon`, `bun run dev:internal`, `bun run dev:api`, and
+  `bun run dev:web`.
+- Worker services use Waypoint's Miniflare-backed local runtime and rebuild into
+  `.waypoint/build/dev/<app>` on source changes. Do not add product-owned
+  Wrangler config.
+- `way dev` logs should be sent to the Waypoint local daemon, which always runs
+  locally on development devices.
 - Local-only projects belong in the Waypoint dashboard under `/dev`.
 - Hosted/cloud projects belong under `/projects`.
 - For this template, inspect local logs at `/dev/waypoint-guest-app/logs`.

@@ -4,8 +4,11 @@ import type { ApiEnv } from "./env";
 import type { AppDb } from "./db";
 import { schema } from "./db";
 
-const appUrl = (env: ApiEnv) => env.DEV_WEB_URL ?? env.PUBLIC_APP_URL;
-const apiUrl = (env: ApiEnv) => env.DEV_API_URL ?? env.PUBLIC_APP_URL;
+const appUrl = (env: ApiEnv) => urlString(env.DEV_WEB_URL ?? env.PUBLIC_APP_URL);
+const apiUrl = (env: ApiEnv) => urlString(env.DEV_API_URL ?? env.API_URL);
+
+const urlString = (value: string | { readonly href: string }) =>
+  typeof value === "string" ? value : value.href;
 
 const sharedCookieDomain = (env: ApiEnv) => {
   const appHost = new URL(appUrl(env)).hostname;
@@ -23,9 +26,18 @@ export const createAuth = (env: ApiEnv, db: AppDb) => {
   const cookieDomain = sharedCookieDomain(env);
 
   return createWaypointAuth({
-    db,
     env,
-    schema,
+    database: {
+      drizzle: db,
+      provider: "sqlite",
+      schema,
+    },
+    origins: {
+      extra: [publicAppUrl],
+    },
+    cookies: {
+      ...(cookieDomain ? { domain: cookieDomain } : {}),
+    },
     betterAuth: {
       ...(cookieDomain
         ? {
@@ -42,7 +54,6 @@ export const createAuth = (env: ApiEnv, db: AppDb) => {
             },
           }
         : {}),
-      baseURL: apiUrl(env),
       emailAndPassword: {
         enabled: true,
       },
@@ -57,7 +68,6 @@ export const createAuth = (env: ApiEnv, db: AppDb) => {
           },
         }),
       ],
-      trustedOrigins: [publicAppUrl],
     },
   });
 };
